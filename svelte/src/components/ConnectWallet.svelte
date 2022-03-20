@@ -13,7 +13,7 @@
 		const signer = provider.getSigner();
 		account = await signer.getAddress();
 		chainID = await signer.getChainId();
-		if (account && chainID == 4) {
+		if (account && chainID == 43113) {
 			const lotteryContract = new ethers.Contract(lotteryAddress, LotteryABI.abi, signer);
 			web3Props = {
 				lotteryContract,
@@ -25,13 +25,13 @@
 </script>
 
 <!-- 4 is for Rinkeby This will need to be changed -->
-{#if !account || chainID !== 4}
+{#if !account || chainID !== 43113}
 	<div class="hero min-h-screen" style="background-image: url(/metamask-fox-wordmark-stacked.svg);">
 		<div class="hero-overlay bg-opacity-60" />
 		<div class="hero-content text-center text-neutral-content">
 			<div class="max-w-md">
 				<h3 class="font-bold text-lg">Please connect your wallet on the Rinkeby Test Network.</h3>
-				{#if chainID !== 4 && chainID}
+				{#if chainID !== 43113 && chainID}
 					<p class="text-sm text-gray-500 px-8" />
 					<p>Network Name: Rinkeby Testnet</p>
 					<p>New RPC URL: https://rinkeby.infura.io/</p>
