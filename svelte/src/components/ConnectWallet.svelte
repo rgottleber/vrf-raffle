@@ -3,6 +3,8 @@
 	export let account;
 	export let chainID;
 	export let web3Props;
+	export let lotteryAddress;
+	export let LotteryABI;
 	// Attach Wallet if not already attached
 	async function attachWallet() {
 		const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
@@ -11,21 +13,15 @@
 		const signer = provider.getSigner();
 		account = await signer.getAddress();
 		chainID = await signer.getChainId();
+		if (account && chainID == 4) {
+			const lotteryContract = new ethers.Contract(lotteryAddress, LotteryABI.abi, signer);
+			web3Props = {
+				lotteryContract,
+				signer,
+				provider
+			};
+		}
 	}
-	// if (account && chainID == 4) {
-	// const fundraiserFactoryContract = new ethers.Contract(
-	// 	factoryAddress,
-	// 	FundraiserFactoryABI.abi,
-	// 	signer
-	// );
-	// fundraisers = await fundraiserFactoryContract.fundraisers(100, 0);
-	// update the props for the components
-	// web3Props = {
-	// 	fundraiserFactoryContract,
-	// 	signer,
-	// 	provider
-	// };
-	// }
 </script>
 
 <!-- 4 is for Rinkeby This will need to be changed -->

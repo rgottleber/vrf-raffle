@@ -1,12 +1,17 @@
 <script>
 	import { ethers } from 'ethers';
 	import ConnectWallet from '../components/ConnectWallet.svelte';
+	import LotteryABI from '../contracts/Lottery.json';
+	const lotteryAddress = '0x8858970eF4c50d4e1250097a3d2160D6e8778a6D';
 	let web3Props = {};
 	$: show = false;
 	$: showAdd = false;
 	$: account = null;
 	$: chainID = null;
 	$: vals = [];
+	$: pickingWinner = false;
+	$: listSubmitted = false;
+	$: winner = 'No Winner YET!';
 	let convert;
 	function convertToByte32() {
 		vals = [];
@@ -14,13 +19,41 @@
 			vals.push(ethers.utils.formatBytes32String(element));
 		});
 	}
-	function submitList() {
-		console.log('submitted:  ', vals);
+	async function submitList() {
+		listSubmitted = false;
+		winner = 'No Winner YET!';
+		let txn = await web3Props.lotteryContract.addPlayers(vals);
+		txn.wait();
+		listSubmitted = true;
+	}
+
+	async function pickWinner() {
+		pickingWinner = true;
+		winner = 'No Winner YET!';
+		let txn = await web3Props.lotteryContract.selectWinner();
+		txn.wait();
+		web3Props.lotteryContract.on('Winner', (pick) => {
+			pickingWinner = false;
+			winner = ethers.utils.parseBytes32String(pick);
+		});
 	}
 </script>
 
+<div class="grid place-items-center">
+	<div>
+		<h1 class="text-center text-2xl font-bold">Lottery Winner: {winner}</h1>
+	</div>
+	{#if listSubmitted}
+		<div>
+			<button class="btn btn-accent" on:click={pickWinner}>Pick Winner</button>
+		</div>
+	{/if}
+</div>
+{#if pickingWinner}
+	<div class="text-center">picking</div>
+{/if}
 {#if !account || chainID !== 4}
-	<ConnectWallet bind:account bind:chainID bind:web3Props />
+	<ConnectWallet bind:account bind:chainID bind:web3Props {LotteryABI} {lotteryAddress} />
 {:else}
 	{#if show}
 		Submitted
