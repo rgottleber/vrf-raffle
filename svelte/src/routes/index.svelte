@@ -2,7 +2,7 @@
 	import { ethers } from 'ethers';
 	import ConnectWallet from '../components/ConnectWallet.svelte';
 	import LotteryABI from '../contracts/Lottery.json';
-	const lotteryAddress = '0x4CaCDaA83594F607EfCd1755CB53dDe18501E9E1';
+	const lotteryAddress = '0x5b46FD5Bb0EB337C9a04672543c4154F958D4bC0';
 	let web3Props = {};
 	$: account = null;
 	$: chainID = null;
@@ -10,7 +10,7 @@
 	$: listSubmitted = false;
 	$: pickingWinner = false;
 	$: winnerPicked = false;
-	$: showSetWinners = false;
+	$: winnersPicked = false;
 	$: winnersSet = false;
 	$: winners = ['No Winner YET!'];
 	let convert;
@@ -20,27 +20,25 @@
 		convert.split(',').forEach((element) => {
 			vals.push(ethers.utils.formatBytes32String(element));
 		});
+		submitList();
 	}
 	async function submitList() {
-		listSubmitted = false;
+		listSubmitted = true;
 		winners = [];
 		winners[0] = 'No Winner YET!';
 		let txn = await web3Props.lotteryContract.addPlayers(vals);
 		txn.wait();
-		listSubmitted = true;
-	}
-
-	async function pickWinner() {
-		winners = [];
 		pickingWinner = true;
-		winners[0] = 'No Winner YET! Please wait...';
-		web3Props.lotteryContract.selectWinner();
+		winners = [];
+		winners[0] = "Let's Pick Some Winners!";
 		web3Props.lotteryContract.once('RandomWords', () => {
 			pickingWinner = false;
 			winnerPicked = true;
 		});
 	}
-	async function setWinners() {
+	async function pickWinners() {
+		winners[0] = 'Picking Winners...';
+		winnersPicked = true;
 		web3Props.lotteryContract.setWinners();
 		web3Props.lotteryContract.once('Winner', (w1, w2, w3) => {
 			winners[0] = ethers.utils.parseBytes32String(w1);
@@ -77,7 +75,7 @@
 							fill="#1C64F2"
 						/>
 					</svg>
-					Picking Winners...
+					Submitting Players...
 				</button>
 			</div>
 		{:else}
@@ -88,14 +86,11 @@
 			{/each}
 		{/if}
 	</div>
-	{#if listSubmitted && !winnerPicked}
-		<div>
-			<button class="btn btn-accent" on:click={pickWinner}>Pick Winner</button>
-		</div>
-	{/if}
 	{#if winnerPicked && !winnersSet}
 		<div>
-			<button class="btn btn-accent" on:click={setWinners}>Set Winners</button>
+			<button disabled={winnersPicked} class="btn btn-accent" on:click={pickWinners}
+				>Pick Winners</button
+			>
 		</div>
 	{/if}
 </div>
@@ -109,16 +104,10 @@
 				<textarea class="textarea textarea-primary" placeholder="Entries" bind:value={convert} />
 			</div>
 			<div>
-				<button class="btn btn-secondary" on:click={convertToByte32}>Convert</button>
-				{#if vals.length > 0}
-					<button class="btn btn-primary" on:click={submitList}>Submit</button>
-				{/if}
+				<button disabled={listSubmitted} class="btn btn-secondary" on:click={convertToByte32}
+					>Submit</button
+				>
 			</div>
-			[
-			{#each vals as element}
-				<div>'{element}',</div>
-			{/each}
-			]
 		</div>
 	</div>
 {/if}

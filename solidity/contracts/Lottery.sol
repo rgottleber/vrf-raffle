@@ -58,13 +58,14 @@ contract Lottery is Ownable, VRFConsumerBaseV2 {
 
     function addPlayers(bytes32[] calldata _players) public onlyOwner {
         players = _players;
+        selectWinner();
     }
 
     function getPlayers() public view returns (bytes32[] memory) {
         return players;
     }
 
-    function selectWinner() external onlyOwner {
+    function selectWinner() internal onlyOwner {
         // Will revert if subscription is not set and funded.
         winner1 = "";
         winner2 = "";
