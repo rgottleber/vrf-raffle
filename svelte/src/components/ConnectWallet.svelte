@@ -30,7 +30,7 @@
 		<div class="hero-overlay bg-opacity-60" />
 		<div class="hero-content text-center text-neutral-content">
 			<div class="max-w-md">
-				<h3 class="font-bold text-lg">Please connect your wallet on the Rinkeby Test Network.</h3>
+				<h3 class="font-bold text-lg">Please connect your wallet on the Avalanche Test Network.</h3>
 				{#if chainID !== 43113 && chainID}
 					<p class="text-sm text-gray-500 px-8" />
 					<p>Network Name: Avalanche FUJI Testnet</p>
