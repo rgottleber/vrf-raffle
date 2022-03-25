@@ -33,11 +33,11 @@
 				<h3 class="font-bold text-lg">Please connect your wallet on the Rinkeby Test Network.</h3>
 				{#if chainID !== 43113 && chainID}
 					<p class="text-sm text-gray-500 px-8" />
-					<p>Network Name: Rinkeby Testnet</p>
-					<p>New RPC URL: https://rinkeby.infura.io/</p>
-					<p>Chain ID: 4</p>
-					<p>Currency Symbol: ETH</p>
-					<p>Block Explorer URL: https://rinkeby.etherscan.io</p>
+					<p>Network Name: Avalanche FUJI Testnet</p>
+					<p>New RPC URL: https://api.avax-test.network/ext/bc/C/rpc</p>
+					<p>Chain ID: 43113</p>
+					<p>Currency Symbol: AVAX</p>
+					<p>Block Explorer URL: https://testnet.snowtrace.io/</p>
 				{/if}
 				<button class="btn btn-accent" on:click={attachWallet}>Attach Wallet</button>
 			</div>
